@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict House Price</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-home"></i> Real Estate Predictor
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="predict.html" class="nav-link active">Predict</a></li>
+                <li><a href="index.html#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Prediction Section -->
+    <section class="prediction-section">
+        <div class="prediction-container">
+            <div class="prediction-form-wrapper glass-card">
+                <h1>Predict Your Property Price</h1>
+                <p>Fill in the details below to get an accurate price estimate</p>
+                
+                <form id="predictionForm" class="prediction-form">
+                    <div class="form-group">
+                        <label for="location">
+                            <i class="fas fa-map-marker-alt"></i> Location
+                        </label>
+                        <select id="location" name="location" required>
+                            <option value="">Select a location...</option>
+                        </select>
+                        <small id="locationError" class="error-message"></small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sqft">
+                                <i class="fas fa-ruler"></i> Square Feet
+                            </label>
+                            <input type="number" id="sqft" name="sqft" placeholder="Total area" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bath">
+                                <i class="fas fa-shower"></i> Bathrooms
+                            </label>
+                            <input type="number" id="bath" name="bath" placeholder="Number of baths" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bhk">
+                            <i class="fas fa-door-open"></i> BHK
+                        </label>
+                        <select id="bhk" name="bhk" required>
+                            <option value="">Select BHK</option>
+                            <option value="1">1 BHK</option>
+                            <option value="2">2 BHK</option>
+                            <option value="3">3 BHK</option>
+                            <option value="4">4 BHK</option>
+                            <option value="5">5+ BHK</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="predict-btn">
+                        <span>Predict Price</span>
+                        <i class="fas fa-magic"></i>
+                    </button>
+                </form>
+
+                <div id="result" class="result-container" style="display: none;">
+                    <div class="result-content">
+                        <h2>Estimated Price</h2>
+                        <div class="price-display" id="priceDisplay">
+                            ₹ 0
+                        </div>
+                        <p id="resultMessage" class="result-message"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card glass-card">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>AI Powered</h3>
+                    <p>Advanced machine learning model</p>
+                </div>
+                <div class="info-card glass-card">
+                    <i class="fas fa-zap"></i>
+                    <h3>Instant Analysis</h3>
+                    <p>Get results in seconds</p>
+                </div>
+                <div class="info-card glass-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Accurate</h3>
+                    <p>Based on real market data</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Bengaluru Real Estate Predictor. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);">Created by <span style="color: var(--primary); font-weight: 600;">Venen Alex</span></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
