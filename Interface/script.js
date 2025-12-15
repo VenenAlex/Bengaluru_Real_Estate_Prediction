@@ -1,3 +1,8 @@
+// ==================== API Configuration ====================
+const API_BASE_URL = window.location.origin.includes('localhost:8888') 
+    ? 'http://localhost:8888' 
+    : 'http://localhost:5000';
+
 // ==================== Smooth Scroll Navigation ====================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -32,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Fetch available locations from API
 async function loadLocations() {
     try {
-        const response = await fetch('http://localhost:5000/api/locations');
+        const response = await fetch(`${API_BASE_URL}/api/locations`);
         if (!response.ok) {
             throw new Error('Failed to fetch locations');
         }
@@ -42,7 +47,7 @@ async function loadLocations() {
         console.error('Error loading locations:', error);
         const locationError = document.getElementById('locationError');
         if (locationError) {
-            locationError.textContent = 'Could not load locations. Make sure the Flask server is running on http://localhost:5000';
+            locationError.textContent = `Could not load locations. Make sure the Flask server is running on ${API_BASE_URL}`;
         }
     }
 }
@@ -99,7 +104,7 @@ if (predictionForm) {
 
         try {
             // Send request to Flask API
-            const response = await fetch('http://localhost:5000/api/predict', {
+            const response = await fetch(`${API_BASE_URL}/api/predict`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

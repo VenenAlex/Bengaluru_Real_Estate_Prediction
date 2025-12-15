@@ -2,11 +2,11 @@ import pickle
 import json
 import numpy as np
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_folder='Interface', static_url_path='')
 CORS(app)  # Enable CORS for all routes
 
 # Load model
@@ -37,6 +37,18 @@ try:
 except Exception as e:
     print(f"⚠ Warning: Could not load training data: {e}")
     d8_data = None
+
+
+@app.route('/')
+def index():
+    """Serve the main HTML page"""
+    return send_from_directory('Interface', 'index.html')
+
+
+@app.route('/predict.html')
+def predict_page():
+    """Serve the prediction page"""
+    return send_from_directory('Interface', 'predict.html')
 
 
 @app.route('/api/predict', methods=['POST'])
@@ -137,8 +149,8 @@ if __name__ == '__main__':
     print("Bengaluru Real Estate Price Predictor")
     print("="*50)
     print(f"Available locations: {len(locations)}")
-    print(f"Starting Flask server on http://localhost:5000")
+    print(f"Starting Flask server on http://0.0.0.0:5000")
     print("="*50 + "\n")
     
-    # Run Flask app in debug mode on port 5000
-    app.run(debug=True, port=5000, use_reloader=False)
+    # Run Flask app on all interfaces (0.0.0.0) to accept external connections
+    app.run(host="0.0.0.0", port=5000, debug=False)
