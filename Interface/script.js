@@ -1,7 +1,28 @@
 // ==================== API Configuration ====================
-const API_BASE_URL = window.location.origin.includes('localhost:8888') 
-    ? 'http://localhost:8888' 
-    : 'http://localhost:5000';
+// Detect API endpoint based on current URL
+function getAPIBaseURL() {
+    const currentUrl = window.location.href;
+    
+    // If running on port 8888, use that same port for API
+    if (window.location.port === '8888') {
+        return `${window.location.protocol}//${window.location.hostname}:8888`;
+    }
+    // If running on port 5000, use that
+    if (window.location.port === '5000') {
+        return `${window.location.protocol}//${window.location.hostname}:5000`;
+    }
+    // If running from Flask directly (localhost:5000)
+    if (window.location.hostname === 'localhost') {
+        return `${window.location.protocol}//localhost:5000`;
+    }
+    // Default fallback
+    return window.location.origin;
+}
+
+const API_BASE_URL = getAPIBaseURL();
+
+console.log('Current URL:', window.location.href);
+console.log('API Base URL:', API_BASE_URL);
 
 // ==================== Smooth Scroll Navigation ====================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -34,20 +55,45 @@ document.addEventListener('DOMContentLoaded', async function() {
     initializeCounterAnimation();
 });
 
-// Fetch available locations from API
+// Fetch available locations from API with retry logic
 async function loadLocations() {
+    const locationError = document.getElementById('locationError');
+    
     try {
-        const response = await fetch(`${API_BASE_URL}/api/locations`);
+        console.log('Fetching locations from:', `${API_BASE_URL}/api/locations`);
+        
+        const response = await fetch(`${API_BASE_URL}/api/locations`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
         if (!response.ok) {
-            throw new Error('Failed to fetch locations');
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
+        
         const data = await response.json();
-        populateLocationDropdown(data.locations);
+        console.log('Locations loaded successfully:', data.count, 'locations');
+        
+        if (data.locations && data.locations.length > 0) {
+            populateLocationDropdown(data.locations);
+            if (locationError) {
+                locationError.style.display = 'none';
+            }
+        } else {
+            throw new Error('No locations returned from API');
+        }
     } catch (error) {
         console.error('Error loading locations:', error);
-        const locationError = document.getElementById('locationError');
         if (locationError) {
-            locationError.textContent = `Could not load locations. Make sure the Flask server is running on ${API_BASE_URL}`;
+            locationError.style.display = 'block';
+            locationError.innerHTML = `
+                <strong>⚠️ Error loading locations:</strong><br/>
+                ${error.message}<br/>
+                <small>API URL: ${API_BASE_URL}/api/locations</small><br/>
+                <small>Make sure the Flask server is running and accessible at ${API_BASE_URL}</small>
+            `;
         }
     }
 }
@@ -55,6 +101,11 @@ async function loadLocations() {
 // Populate location dropdown with fetched data
 function populateLocationDropdown(locations) {
     const locationSelect = document.getElementById('location');
+    
+    if (!locationSelect) {
+        console.error('Location select element not found');
+        return;
+    }
     
     // Clear existing options except the first one
     while (locationSelect.options.length > 1) {
@@ -68,6 +119,8 @@ function populateLocationDropdown(locations) {
         option.textContent = formatLocationName(location);
         locationSelect.appendChild(option);
     });
+    
+    console.log('Dropdown populated with', locations.length, 'locations');
 }
 
 // Format location name for display
